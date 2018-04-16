@@ -1,28 +1,49 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
+  <div>
+    <input v-model="msg">
+    <p>msg: {{ msg }}</p>
+    <p>prop: {{ propMessage }}</p>
+    <p>helloMsg: {{ helloMsg }}</p>
+    <p>computed msg: {{ computedMsg }}</p>
+    <button @click="greet">Greet</button>
+    <Hello ref="helloComponent" />
+    <World />
   </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld'
+<script lang="ts">
+import Vue from 'vue'
+import Component from 'vue-class-component'
+import Hello from './components/Hello.vue'
+import World from './components/World'
 
-export default {
-  name: 'App',
+@Component({
+  props: {
+    propMessage: String
+  },
   components: {
-    HelloWorld
+    Hello,
+    World
   }
+})
+export default class App extends Vue {
+  msg: number = 123;
+  propMessage!: string;
+  helloMsg: string = 'Hello ' + this.propMessage;
+  
+  get computedMsg (): string {
+    return 'computed ' + this.msg;
+  }
+
+  greet (): void {
+    alert('greeting: ' + this.msg)
+    this.$refs.helloComponent.sayHello();
+  }
+
+  mounted () {
+    this.greet();
+  }
+
+  $refs!: {helloComponent: Hello}
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
